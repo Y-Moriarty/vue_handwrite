@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue</title>
+  </head>
+  <body>
+    <div id="app">hello</div>
+    <script src="dist/vue.js"></script>
+    <script>
+      // umd Vue
+      // console.log(Vue)
+      // 响应式 vue2
+      // new Vue 时对传入对象的所有内容进行初始化
+      let vm = new Vue({
+        el: '#app',
+        data() {
+          // console.log(this) // 如果 initState 不使用 call() -> window
+          return {
+            msg: 'hello2'
+          }
+        },
+        // data: {
+        //   msg: 'hello'
+        // },
+        props: {}
+        // ...
+      })
+      console.log('vm: ', vm)
+      console.log('vm set: ', (vm._data.msg = 100))
+      console.log('vm: ', vm._data.msg)
+      // console.log('vm._data: ', vm._data)
+    </script>
+  </body>
+</html>
