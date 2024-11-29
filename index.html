@@ -14,23 +14,32 @@
       // 响应式 vue2
       // new Vue 时对传入对象的所有内容进行初始化
       let vm = new Vue({
-        el: '#app',
+        el: "#app",
         data() {
           // console.log(this) // 如果 initState 不使用 call() -> window
           return {
-            msg: 'hello2'
-          }
+            msg: "hello2",
+            a: { b: 20 },
+            list: [1, 2, 3],
+            arr: [
+              {
+                a: 1,
+              },
+            ],
+          };
         },
         // data: {
         //   msg: 'hello'
         // },
-        props: {}
+        props: {},
         // ...
-      })
-      console.log('vm: ', vm)
-      console.log('vm set: ', (vm._data.msg = 100))
-      console.log('vm: ', vm._data.msg)
+      });
+      // console.log("vm: ", vm);
+      // console.log("vm set: ", (vm._data.msg = 100));
+      // console.log("vm: ", vm._data.msg);
       // console.log('vm._data: ', vm._data)
+      // console.log("vm list: ", vm._data.list.push(4, 5));
+      console.log("vm arr: ", vm._data.arr.push({ a: 4, b: 5 }));
     </script>
   </body>
 </html>
