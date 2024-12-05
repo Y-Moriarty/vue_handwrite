@@ -1,3 +1,4 @@
+import { initGlobApi } from './global-api/index'
 import { initMixin } from './init'
 import { lifecycleMixin } from './lifecycle'
 import { renderMixin } from './vnode/index'
@@ -22,4 +23,6 @@ renderMixin(Vue)
 //   console.log('🚀 ~ Vue.prototype._init ~ options:', options)
 // }
 
+// 使用一些全局方法(API) Vue.mixin Vue.Component Vue.extend等
+initGlobApi(Vue)
 export default Vue

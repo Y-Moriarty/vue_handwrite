@@ -12,6 +12,18 @@
     </div>
     <script src="dist/vue.js"></script>
     <script>
+      // 全局的生命周期函数先于自定义的生命周期函数执行
+      Vue.Mixin({
+        created: function a() {
+          console.log('a')
+        }
+      })
+      Vue.Mixin({
+        created: function b() {
+          console.log('b')
+        }
+      })
+
       // umd Vue
       // console.log(Vue)
       // 响应式 vue2
@@ -34,8 +46,11 @@
         // data: {
         //   msg: 'hello'
         // },
-        props: {}
+        props: {},
         // ...
+        created() {
+          console.log('created')
+        }
       })
       // .$mount("#app") // 作用和 el 一样
 
@@ -58,6 +73,10 @@
       // 1. 模板编译
       // 2. 数据依赖
       // 3. 生命周期
+
+      // Vue 生命周期的实现原理
+      // 1. Vue.Mixin({}) - 混入
+      // 2. 生命周期其实是一种基于订阅发布的设计模式，将 new Vue() 传入的对象存入 options
     </script>
   </body>
 </html>

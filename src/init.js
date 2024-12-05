@@ -1,6 +1,7 @@
 import { compileToFunction } from './compile/index'
 import { initState } from './initState'
-import { mountComponent } from './lifecycle'
+import { callHook, mountComponent } from './lifecycle'
+import { mergeOptions } from './utils/index'
 
 export function initMixin(Vue) {
   Vue.prototype._init = function (options) {
@@ -8,9 +9,18 @@ export function initMixin(Vue) {
     // * 先获取 vue 实例
     let vm = this
     // 将传入配置项挂载到实例上
-    vm.$options = options
+    // vm.$options = options
+    // 合并 options 和 Mixin 的 options 并挂载到实例上
+    vm.$options = mergeOptions(Vue.options, options)
+    console.log('🚀 ~ initMixin ~ vm.$options:', vm.$options)
+
+    // * 订阅-发布模式 调用生命周期函数
+    callHook(vm, 'beforeCreated')
+
     // 初始化状态
     initState(vm)
+
+    callHook(vm, 'created')
 
     // * 渲染模板（需要有 el - 所需挂载的元素）
     if (vm.$options.el) {
@@ -20,7 +30,7 @@ export function initMixin(Vue) {
 
   // 创建 $mount
   Vue.prototype.$mount = function (el) {
-    console.log('🚀 ~ Vue.prototype.$mount ~ el:', el)
+    // console.log('🚀 ~ Vue.prototype.$mount ~ el:', el)
     // 拿到 el 后进行模板编译
     // el template render
     let vm = this
@@ -33,13 +43,14 @@ export function initMixin(Vue) {
       if (!template && el) {
         // 获取 html - 上面已获取el元素，通过其 outerHTML 获取内容
         el = el.outerHTML // innerHTML 只能获取标签内部的内容
-        console.log('🚀 ~ initMixin ~ el:', el) // <div id="app">hello</div>
+        // console.log('🚀 ~ initMixin ~ el:', el)
+        // ↑ <div id="app">hello</div>
         // 变成 AST 语法树 => render 函数 => vNode（虚拟dom）
         // 与 vNode 的区别：vNode 只能操作节点，而 AST 可以操作一切（CSS，JS等）
 
         // * compileToFunction: html -> ast -> render
         let render = compileToFunction(el) // 得到 render 函数
-        console.log('🚀 ~ initMixin ~ render:', render)
+        // console.log('🚀 ~ initMixin ~ render:', render)
         // 1. 将 render 函数 -> vNode
         // 2. 将 vNode -> 真实 DOM 放到页面上
         options.render = render
