@@ -6,7 +6,10 @@
     <title>Vue</title>
   </head>
   <body>
-    <div id="app">hello</div>
+    <div id="app" style="color: red; font-size: 20px">
+      hello{{msg}}
+      <h1>张三</h1>
+    </div>
     <script src="dist/vue.js"></script>
     <script>
       // umd Vue
@@ -14,32 +17,47 @@
       // 响应式 vue2
       // new Vue 时对传入对象的所有内容进行初始化
       let vm = new Vue({
-        el: "#app",
+        el: '#app',
         data() {
           // console.log(this) // 如果 initState 不使用 call() -> window
           return {
-            msg: "hello2",
+            msg: 'hello2',
             a: { b: 20 },
             list: [1, 2, 3],
             arr: [
               {
-                a: 1,
-              },
-            ],
-          };
+                a: 1
+              }
+            ]
+          }
         },
         // data: {
         //   msg: 'hello'
         // },
-        props: {},
+        props: {}
         // ...
-      });
+      })
+      // .$mount("#app") // 作用和 el 一样
+
       // console.log("vm: ", vm);
       // console.log("vm set: ", (vm._data.msg = 100));
       // console.log("vm: ", vm._data.msg);
       // console.log('vm._data: ', vm._data)
       // console.log("vm list: ", vm._data.list.push(4, 5));
-      console.log("vm arr: ", vm._data.arr.push({ a: 4, b: 5 }));
+      // console.log("vm push: ", vm._data.arr.push({ a: 4, b: 5 }));
+      // console.log("vm arr: ", vm.arr);
+      // console.log("vm.msg: ", (vm.msg = 100));
+
+      // * 面试题：
+      // Vue 初次渲染
+      //  初始化数据 =>将模板进行编译 => Vue 模板编译（el 必须要有）=> 得到 render 函数 => 生成虚拟节点 => 转变为真实 DOM => 放到页面上
+      // 模板编译的三种方式：render -> template -> el(通过 el 获取元素)
+      // 查看官网生命周期图示
+
+      // 手写 vue 的难点
+      // 1. 模板编译
+      // 2. 数据依赖
+      // 3. 生命周期
     </script>
   </body>
 </html>

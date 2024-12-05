@@ -29,8 +29,23 @@ function initData(vm) {
   let data = vm.$options.data;
   data = vm._data = typeof data === "function" ? data.call(vm) : data; // ! 注意这里 data() 的 this 指向
   console.log("🚀 ~ initData ~ data:", vm);
+  // 将 data 上的所有属性代理到实例 vm 上 - 则可以通过 vm.xxx 来访问而不再需要 vm._data.xxx
+  for (let key in data) {
+    proxy(vm, "_data", key);
+  }
   // * 对data数据进行劫持
   observer(data); // (1) 对象 (2) 数组
+}
+
+function proxy(vm, source, key) {
+  Object.defineProperty(vm, key, {
+    get() {
+      return vm[source][key];
+    },
+    set(newValue) {
+      vm[source][key] = newValue;
+    },
+  });
 }
 
 function initProps(vm) {}

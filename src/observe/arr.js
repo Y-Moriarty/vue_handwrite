@@ -11,7 +11,8 @@ methods.forEach((method) => {
     // 添加业务逻辑
     // 如果数组里有对象
     let result = oldArrayProtoMethods[method].apply(this, args); // this 指向数组
-    // 问题：数组追加对象时，对象的属性没有被劫持
+    // console.log("🚀 ~ methods.forEach ~ this:", this);
+    // 此处有问题：数组追加对象时，对象的属性没有被劫持
     let inserted;
     switch (method) {
       case "push":
@@ -24,6 +25,7 @@ methods.forEach((method) => {
     }
     console.log("inserted: ", inserted);
     let ob = this.__ob__; // 这里的 this 指向 Observer constructor 的 data - data 中自定义了 __ob__
+    // console.log("🚀 ~ methods.forEach ~ ob:", ob);
     if (inserted) {
       ob.observeArray(inserted); // 对添加的对象进行劫持
     }
