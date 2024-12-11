@@ -31,7 +31,7 @@ function mergeHook(parentVal, childVal) {
 // 传入参数：1. 全局的 options 2. 混入的自定义 options
 // 首次 parent 为空 - Vue.options = {}，后续的 parent 为数组
 export function mergeOptions(parent, child) {
-  console.log('🚀 ~ mergeOptions ~ parent, child:', parent, child)
+  // console.log('🚀 ~ mergeOptions ~ parent, child:', parent, child)
   const options = {}
   // 如果 parent 有值，则没有 child
   for (const key in parent) {

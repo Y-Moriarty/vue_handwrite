@@ -9,6 +9,8 @@
     <div id="app" style="color: red; font-size: 20px">
       hello{{msg}}
       <h1>张三</h1>
+      <h2>{{a.b}}</h2>
+      <h3>{{arr}}</h3>
     </div>
     <script src="dist/vue.js"></script>
     <script>
@@ -62,6 +64,32 @@
       // console.log("vm push: ", vm._data.arr.push({ a: 4, b: 5 }));
       // console.log("vm arr: ", vm.arr);
       // console.log("vm.msg: ", (vm.msg = 100));
+
+      // setTimeout(() => {
+      //   vm.msg = 'world'
+      //   // 手动触发更新，重新走一遍模板编译
+      //   vm._update(vm._render())
+      // }, 1000)
+      // * 一、实现自动更新
+      // 1. 数据变化，自动更新视图 vm._update(vm._render())
+      // 2. vue 的更新策略：以组件为单位，给每一个组件添加一个 watcher，当属性变化时，调用 watcher
+      console.log(vm)
+      setTimeout(() => {
+        // 自动更新 - 将 vm._update(vm._render()) 封装成函数，在数据更新时调用
+        vm.msg = 'world'
+        vm.arr.push({ a: 4, b: 5 })
+      }, 1000)
+
+      // * 二、实现对象收集依赖
+      // dep 和 watcher 关系 - 多对多
+
+      // * 三、数组收集
+      // 思路：
+      // 1. 给所有对象类型增加一个 dep
+      // 2. 获取数组的值，会调用 get 方法时让当前数组记住这个 watcher
+      //  2.1 需要获取到当前 dep
+      //  2.2 面对数组取值的时候，让数组的 dep 记住这个 wathcer
+      // 3. 当更新数组的时候，找到这个 watcher 进行更新
 
       // * 面试题：
       // Vue 初次渲染

@@ -54,7 +54,7 @@ function start(tag, attrs) {
 // 文本标签 - 获取文本
 function charts(text) {
   // console.log('🚀 ~ text:', text)
-  text = text.replace(/a/g, '') // /a 替换空格
+  // text = text.replace(/a/g, '') // /a 替换空格
   // console.log('🚀 ~ charts ~ text:', text)
   if (text) {
     createParent.children.push({

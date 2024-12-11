@@ -1,10 +1,10 @@
 export function patch(oldVnode, vnode) {
-  console.log('🚀 ~ patch ~ oldVnode, vnode:', oldVnode, vnode)
+  // console.log('🚀 ~ patch ~ oldVnode, vnode:', oldVnode, vnode)
 
   // * 将 vNode -> 真实 DOM
   // 1. 创建新 DOM
   let el = createEL(vnode)
-  console.log('🚀 ~ patch ~ el:', el)
+  // console.log('🚀 ~ patch ~ el:', el)
   // 2. 替换 - 未使用 diff 算法的直接替换
   // 2.1 获取父节点
   let parentEL = oldVnode.parentNode // body，因为我们挂载到 app 上

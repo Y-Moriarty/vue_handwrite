@@ -1,3 +1,4 @@
+import watcher from './observe/watcher'
 import { patch } from './vnode/patch'
 
 export function mountComponent(vm, el) {
@@ -5,7 +6,14 @@ export function mountComponent(vm, el) {
   callHook(vm, 'beforeMounted')
   // 1. vm,_render 将 render 函数变成 vnode
   // 2. vm.update 将 vnode 变为真实 DOM 放到页面上
-  vm._update(vm._render())
+  // vm._update(vm._render())
+  // * 将视图更新封装成函数，存入到 wathcer 中，在数据变化的时候调用 - 数据变化，视图自动更新
+  let updateComponent = () => {
+    vm._update(vm._render())
+  }
+
+  // * 给组件创建 watcher - 每个组件都有自己的 watcher
+  new watcher(vm, updateComponent, () => {}, true)
 
   // 挂载后执行
   callHook(vm, 'mounted')

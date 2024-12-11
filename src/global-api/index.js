@@ -9,6 +9,6 @@ export function initGlobApi(Vue) {
     // 更新 options
     // 传入参数：1. 全局的 options 2. 混入的自定义 options
     this.options = mergeOptions(this.options, mixin)
-    console.log('🚀 ~ initGlobApi ~ Vue.options:', Vue.options)
+    // console.log('🚀 ~ initGlobApi ~ Vue.options:', Vue.options)
   }
 }
