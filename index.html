@@ -76,6 +76,10 @@
       console.log(vm)
       setTimeout(() => {
         // 自动更新 - 将 vm._update(vm._render()) 封装成函数，在数据更新时调用
+        // 此时每一次更新都会调用 vm._update(vm._render()) - 性能开销大
+        // 解决：使用队列(nextTick) - 批量处理 - 多次数据更新，只调用一次 vm._update(vm._render())
+        //  异步处理 - 数据更新后，不会立即执行
+        //  - watcher.js 的 update()
         vm.msg = 'world'
         vm.arr.push({ a: 4, b: 5 })
       }, 1000)
