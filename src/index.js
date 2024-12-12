@@ -1,5 +1,6 @@
 import { initGlobApi } from './global-api/index'
 import { initMixin } from './init'
+import { stateMixin } from './initState'
 import { lifecycleMixin } from './lifecycle'
 import { renderMixin } from './vnode/index'
 
@@ -17,6 +18,9 @@ lifecycleMixin(Vue)
 
 // 添加 _render
 renderMixin(Vue)
+
+// 给 vm 添加 $nextTick
+stateMixin(Vue)
 
 // 因为初始化后续有许多操作，所以进行模块化处理 -> init.js
 // Vue.prototype._init = function (options) {

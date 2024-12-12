@@ -5,9 +5,9 @@ let starts = {}
 starts.data = function (parentVal, childVal) {
   return childVal
 } // 合并 data
-starts.computed = function () {} // 合并 computed
-starts.watch = function () {} // 合并 watch
-starts.methods = function () {} // 合并 methods
+// starts.computed = function () {} // 合并 computed
+// starts.watch = function () {} // 合并 watch
+// starts.methods = function () {} // 合并 methods
 // 遍历生命周期
 HOOKS.forEach(hook => {
   starts[hook] = mergeHook

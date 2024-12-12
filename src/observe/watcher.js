@@ -1,24 +1,39 @@
+import { nextTick } from '../utils/nextTick'
 import { popTarget, pushTarget } from './dep'
 
 // 1. 通过 wathcer 类实现自动更新 - 区分每个组件的 watcher
 let id = 0
 
 class watcher {
-  constructor(vm, updateComponent, cb, options) {
+  constructor(vm, exprOrfn, cb, options) {
     this.vm = vm
-    this.exprOrfn = updateComponent
+    this.exprOrfn = exprOrfn
     this.cb = cb
     this.options = options // 标识位，是否渲染
     // 每个 watcher 都有一个唯一的 id
     this.id = id++
+    this.user = !!options.user
+    console.log('🚀 ~ watcher ~ constructor ~ user:', this.user)
     this.deps = [] // watcher deposit deps
     this.depsId = new Set()
-    // 判断 updateComponent 的类型，是否是函数
-    if (typeof updateComponent === 'function') {
-      this.getter = updateComponent // 用于更新视图
+    // 判断 exprOrfn 的类型，是否是函数
+    if (typeof exprOrfn === 'function') {
+      this.getter = exprOrfn // 用于更新视图
+    } else {
+      // watch 中监听的属性(字符串) - a a.c ...
+      // 将表达式转换成函数
+      this.getter = function () {
+        let path = exprOrfn.split('.')
+        // console.log('🚀 ~ watcher ~ constructor ~ path:', path)
+        let obj = vm
+        for (let i = 0; i < path.length; i++) {
+          obj = obj[path[i]]
+        }
+        return obj // * 此时返回的值是初始值
+      }
     }
     // 初次渲染时更新视图
-    this.get()
+    this.value = this.get() // 保存 watch 初始值
   }
 
   addDep(dep) {
@@ -34,13 +49,20 @@ class watcher {
   // 初次渲染
   get() {
     pushTarget(this) // 将当前 wathcer 添加到 dep 中
-    this.getter() // 渲染页面 vm._update(vm._render())
+    const value = this.getter() // 渲染页面 vm._update(vm._render())
     popTarget() // 渲染完成后从 dep 中移除
+    return value
   }
 
   // 将 update 里的执行代码封装成函数 - 用于异步更新
   run() {
-    this.get()
+    let value = this.get() // 得到 newValue
+    let oldValue = this.value // oldValue
+    this.value = value
+    // 执行 handler，如果 user 为 true 则表示 cb 是用户传入的
+    if (this.user) {
+      this.cb.call(this.vm, value, oldValue)
+    }
   }
 
   // * 扩展方法---------------------------------
@@ -56,26 +78,40 @@ class watcher {
 let queue = [] // 存放需要批量更新的 watcher 到一个队列中
 let has = {} // 用于去重
 let pending = false // 用于防抖
+// 优化：封装计时器里的代码
+function flushWatcher() {
+  queue.forEach(item => {
+    item.run()
+    // - 转到 run 函数内执行
+    // item.cb() // 执行回调(传入的 cb - updated - 页面定义的 updated 函数)
+  })
+  queue = []
+  has = {}
+  pending = false
+}
 function queueWatcher(watcher) {
   let id = watcher.id // 每个组件都是同一个 watcher
   // console.log('🚀 ~ queueWatcher ~ id:', id)
   // 去重
   if (has[id] == null) {
-    console.log('🚀 ~ I only action one time:')
+    console.log('🚀 ~ I only action one time')
     queue.push(watcher)
     has[id] = true
     // 列队处理
     // 防抖：用户触发多次
     if (!pending) {
       // 将更新变为异步，等待其他同步代码执行完毕
-      setTimeout(() => {
-        // 执行队列中的 watcher
-        queue.forEach(item => item.run())
-        // 执行完后清空队列以及其他控制变量
-        queue = []
-        has = {}
-        pending = false
-      }, 0)
+      // setTimeout(() => {
+      //   // 执行队列中的 watcher
+      //   queue.forEach(item => item.run())
+      //   // 执行完后清空队列以及其他控制变量
+      //   queue = []
+      //   has = {}
+      //   pending = false
+      // }, 0)
+
+      // * 优化：将上面的代码封装成 nextTick - 相当于定时器
+      nextTick(flushWatcher)
     }
     pending = true
   }

@@ -11,20 +11,21 @@
       <h1>张三</h1>
       <h2>{{a.b}}</h2>
       <h3>{{arr}}</h3>
+      <h4>{{b}}</h4>
     </div>
     <script src="dist/vue.js"></script>
     <script>
       // 全局的生命周期函数先于自定义的生命周期函数执行
-      Vue.Mixin({
-        created: function a() {
-          console.log('a')
-        }
-      })
-      Vue.Mixin({
-        created: function b() {
-          console.log('b')
-        }
-      })
+      // Vue.Mixin({
+      //   created: function a() {
+      //     console.log('a')
+      //   }
+      // })
+      // Vue.Mixin({
+      //   created: function b() {
+      //     console.log('b')
+      //   }
+      // })
 
       // umd Vue
       // console.log(Vue)
@@ -42,16 +43,35 @@
               {
                 a: 1
               }
-            ]
+            ],
+            b: 200
           }
         },
         // data: {
         //   msg: 'hello'
         // },
         props: {},
+        watch: {
+          // a(newVal, oldVal) {
+          //   console.log('watch')
+          // },
+          'a.b'(newVal, oldVal) {
+            console.log('watch a.b')
+          },
+          b: {
+            handler() {
+              console.log('handler')
+            },
+            immediate: true
+          }
+        },
+
         // ...
         created() {
           console.log('created')
+        },
+        updated() {
+          console.log('updated')
         }
       })
       // .$mount("#app") // 作用和 el 一样
@@ -82,6 +102,12 @@
         //  - watcher.js 的 update()
         vm.msg = 'world'
         vm.arr.push({ a: 4, b: 5 })
+        // vm.$nextTick(() => {
+        //   // 数据更新后，获取到最新的 dom
+        //   console.log('🚀 ~ vm.$nextTick ~ vm.$el.innerHTML:', vm.$el.innerHTML)
+        // })
+        vm.b = 300
+        vm.a.b = 500
       }, 1000)
 
       // * 二、实现对象收集依赖
@@ -109,6 +135,8 @@
       // Vue 生命周期的实现原理
       // 1. Vue.Mixin({}) - 混入
       // 2. 生命周期其实是一种基于订阅发布的设计模式，将 new Vue() 传入的对象存入 options
+
+      // watch 实现原理
     </script>
   </body>
 </html>

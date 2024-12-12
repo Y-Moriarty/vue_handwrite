@@ -13,7 +13,15 @@ export function mountComponent(vm, el) {
   }
 
   // * 给组件创建 watcher - 每个组件都有自己的 watcher
-  new watcher(vm, updateComponent, () => {}, true)
+  new watcher(
+    vm,
+    updateComponent,
+    // 组件更新完成后执行 - updated
+    () => {
+      callHook(vm, 'updated')
+    },
+    true
+  )
 
   // 挂载后执行
   callHook(vm, 'mounted')
