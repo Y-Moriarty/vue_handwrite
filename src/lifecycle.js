@@ -33,7 +33,14 @@ export function lifecycleMixin(Vue) {
     let vm = this
     // 参数：1. 旧 DOM 2. 新 DOM
     // 重新替换真实 DOM - 此时页面上的 DOM 会被新的 DOM 替换
-    vm.$el = patch(vm.$el, vnode)
+    // 需要区分是首次渲染还是数据更新
+    let prevVnode = vm._vnode // 如果是首次渲染，值为 null
+    if (!prevVnode) {
+      vm.$el = patch(vm.$el, vnode) // 获取到最新的渲染值
+      vm._vnode = vnode // 此时 vnode 是当前的新值，也是下次更新的旧值 -> prevVnode
+    } else {
+      patch(prevVnode, vnode)
+    }
   }
 }
 

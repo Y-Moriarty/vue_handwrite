@@ -33,32 +33,44 @@ stateMixin(Vue)
 initGlobApi(Vue)
 
 // 创建 vNode
-let vm1 = new Vue({ data: { name: '张三' } })
-// let render1 = compileToFunction(`<div id="a" style="color: red"></div>`)
-let render1 = compileToFunction(`<ul>
-  <li id="a" style="color: red" key="a">a</li>
-  <li id="b" style="color: pink" key="b">b</li>
-  <li id="c" style="color: blue" key="c">c</li>
-  </ul>`)
-let vnode1 = render1.call(vm1)
-document.body.appendChild(createEL(vnode1))
-// 数据更新
-let vm2 = new Vue({ data: { name: '李四' } })
-// let render2 = compileToFunction('<div id="b">{{name}}</div>')
-// let render2 = compileToFunction(`<ul>
-//   <li id="a" style="color: red" key="a">a</li>
-//   <li id="b" style="color: pink" key="b">b</li>
-//   <li id="c" style="color: blue" key="c">c</li>
-//   <li id="d" style="color: yellow" key="d">d</li>
+// let vm1 = new Vue({ data: { name: '张三' } })
+// // let render1 = compileToFunction(`<div id="a" style="color: red"></div>`)
+// let render1 = compileToFunction(`<ul>
+//   <li style="color: red" key="a">a</li>
+//   <li style="color: pink" key="b">b</li>
+//   <li style="color: blue" key="c">c</li>
 //   </ul>`)
-let render2 = compileToFunction(`<ul>
-  <li id="d" style="color: yellow" key="d">d</li>
-  <li id="c" style="color: blue" key="c">c</li>
-  <li id="b" style="color: pink" key="b">b</li>
-    <li id="a" style="color: red" key="a">a</li>
-    </ul>`)
-let vnode2 = render2.call(vm2)
-// patch 对比
-patch(vnode1, vnode2)
+// let vnode1 = render1.call(vm1)
+// document.body.appendChild(createEL(vnode1))
+// // 数据更新
+// let vm2 = new Vue({ data: { name: '李四' } })
+// // let render2 = compileToFunction('<div id="b">{{name}}</div>')
+// // let render2 = compileToFunction(`<ul>
+// //   <li id="a" style="color: red" key="a">a</li>
+// //   <li id="b" style="color: pink" key="b">b</li>
+// //   <li id="c" style="color: blue" key="c">c</li>
+// //   <li id="d" style="color: yellow" key="d">d</li>
+// //   </ul>`)
+
+// let render2 = compileToFunction(`<ul>
+//   <li style="color: yellow" key="d">d</li>
+//   <li style="color: blue" key="c">c</li>
+//   <li style="color: pink" key="b">b</li>
+//     <li style="color: red" key="a">a</li>
+//     </ul>`)
+
+// // let render2 = compileToFunction(`<ul>
+// //   <li id="d" style="color: yellow" key="e">e</li>
+// //   <li id="c" style="color: blue" key="f">f</li>
+// //   <li id="b" style="color: pink" key="g">g</li>
+// //     <li id="a" style="color: red" key="h">h</li>
+// //     </ul>`)
+// let vnode2 = render2.call(vm2)
+// // patch 对比
+// console.log('🚀 ~ vnode1:', vnode1)
+// console.log('🚀 ~ vnode2:', vnode2)
+// setTimeout(() => {
+//   patch(vnode1, vnode2)
+// }, 1000)
 
 export default Vue

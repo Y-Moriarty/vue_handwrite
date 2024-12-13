@@ -30,7 +30,7 @@ export function patch(oldVnode, vnode) {
     // 2.1 文本内容不一致 - 直接替换文本
     // 文本节点 tag 为 undefined
     if (!oldVnode.tag) {
-      console.log('🚀 ~ patch ~ oldVnode, vnode:', oldVnode, vnode)
+      // console.log('🚀 ~ patch ~ oldVnode, vnode:', oldVnode, vnode)
       if (oldVnode.text !== vnode.text) {
         return (oldVnode.el.textContent = vnode.text)
       }
@@ -75,6 +75,20 @@ function updateChild(parent, oldChildren, newChildren) {
   let newEndIndex = newChildren.length - 1 // 新的结束索引
   let newEndVnode = newChildren[newEndIndex] // 新的结束节点
 
+  // 创建旧元素的映射表
+  function markIndexBykey(child) {
+    let map = {}
+    child.forEach((item, index) => {
+      // 如果没有 key 则不存入 map
+      if (item.key) {
+        map[item.key] = index
+      }
+    })
+    return map
+  }
+  let map = markIndexBykey(oldChildren)
+  // console.log("🚀 ~ updateChild ~ map:", map)
+
   function isSameVnode(oldVnode, newVnode) {
     // 加 key 的作用
     return oldVnode.tag === newVnode.tag && oldVnode.key === newVnode.key
@@ -84,12 +98,14 @@ function updateChild(parent, oldChildren, newChildren) {
     // 对比子元素
     // 判断头部元素是否是同一个元素，是则进行对比
     if (isSameVnode(oldStartVnode, newStartVnode)) {
+      console.log('🚀 ~ isSameVnode ~ oldStartVnode, newStartVnode:', oldStartVnode, newStartVnode)
       // 递归
       patch(oldStartVnode, newStartVnode)
       // 移动指针
       oldStartVnode = oldChildren[++oldStartIndex]
       newStartVnode = newChildren[++newStartIndex]
     } else if (isSameVnode(oldEndVnode, newEndVnode)) {
+      console.log('🚀 ~ isSameVnode ~ oldEndVnode, newEndVnode:', oldEndVnode, newEndVnode)
       // } else if ((oldEndVnode, newEndVnode)) {
       // 头部不是同一个元素，从尾部开始对比
       // 递归
@@ -97,27 +113,57 @@ function updateChild(parent, oldChildren, newChildren) {
       oldEndVnode = oldChildren[--oldEndIndex]
       newEndVnode = newChildren[--newEndIndex]
     } else if (isSameVnode(oldStartVnode, newEndVnode)) {
+      console.log('🚀 ~ isSameVnode ~ oldStartVnode, newEndVnode:', oldStartVnode, newEndVnode)
       // 新旧的头部和尾部对应的不一样，开始交叉对比（头对尾，尾对头）
       patch(oldStartVnode, newEndVnode)
       oldStartVnode = oldChildren[++oldStartIndex]
       newEndVnode = newChildren[--newEndIndex]
     } else if (isSameVnode(oldEndVnode, newStartVnode)) {
+      console.log('🚀 ~ isSameVnode ~ oldEndVnode, newStartVnode:', oldEndVnode, newStartVnode)
       patch(oldEndVnode, newStartVnode) // 此元素中有子节点
       oldEndVnode = oldChildren[--oldEndIndex]
       newStartVnode = newChildren[++newStartIndex]
     } else {
       // 子节点之间没有对应关系
+      // 1. 创建旧元素的映射表
+      // 2. 从旧节点中寻找元素
+      let moveIndex = map[newStartVnode.key]
+      if (moveIndex === undefined) {
+        // 找不到
+        parent.insertBefore(createEL(newStartVnode), oldStartVnode.el)
+      } else {
+        // 找到 - 将旧元素移动到新元素的位置
+        let moveVnode = oldChildren[moveIndex] // 获取到要移动的元素
+        oldChildren[moveIndex] = null // 防止数组塌陷
+        // 插入
+        parent.insertBefore(moveVnode.el, oldStartVnode.el)
+        // - 问题：插入的元素可能存在子节点，需要递归
+        patch(moveVnode, newStartVnode)
+      }
+      // 新元素指针位移
+      newStartVnode = newChildren[++newStartIndex]
     }
 
     // * 面试题：为什么要加 key？
     // 若是使用 key，元素会被复用而不是重新创建
   }
 
-  // 添加多出的子节点（如果有)}
+  // 添加多出的子节点（如果有)
   if (newStartIndex <= newEndIndex) {
     for (let i = newStartIndex; i <= newEndIndex; i++) {
       let child = newChildren[i]
       parent.appendChild(createEL(child))
+    }
+  }
+  // 清除多余的子节点（如果有)
+  if (oldStartIndex <= oldEndIndex) {
+    for (let i = oldStartIndex; i <= oldEndIndex; i++) {
+      // - 有些元素节点可能为 null - 为了防止数据塌陷
+      let child = oldChildren[i]
+      if (child != null) {
+        parent.removeChild(child.el)
+      } else {
+      }
     }
   }
 }

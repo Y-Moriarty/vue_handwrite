@@ -7,11 +7,11 @@
   </head>
   <body>
     <div id="app" style="color: red; font-size: 20px">
-      <!-- hello{{msg}}
+      hello{{msg}}
       <h1>张三</h1>
       <h2>{{a.b}}</h2>
       <h3>{{arr}}</h3>
-      <h4>{{b}}</h4> -->
+      <h4>{{b}}</h4>
     </div>
     <script src="dist/vue.js"></script>
     <script>
@@ -31,49 +31,49 @@
       // console.log(Vue)
       // 响应式 vue2
       // new Vue 时对传入对象的所有内容进行初始化
-      // let vm = new Vue({
-      //   el: '#app',
-      //   data() {
-      //     // console.log(this) // 如果 initState 不使用 call() -> window
-      //     return {
-      //       msg: 'hello2',
-      //       a: { b: 20 },
-      //       list: [1, 2, 3],
-      //       arr: [
-      //         {
-      //           a: 1
-      //         }
-      //       ],
-      //       b: 200
-      //     }
-      //   },
-      //   // data: {
-      //   //   msg: 'hello'
-      //   // },
-      //   props: {},
-      //   watch: {
-      //     // a(newVal, oldVal) {
-      //     //   console.log('watch')
-      //     // },
-      //     'a.b'(newVal, oldVal) {
-      //       console.log('watch a.b')
-      //     },
-      //     b: {
-      //       handler() {
-      //         console.log('handler')
-      //       },
-      //       immediate: true
-      //     }
-      //   },
+      let vm = new Vue({
+        el: '#app',
+        data() {
+          // console.log(this) // 如果 initState 不使用 call() -> window
+          return {
+            msg: 'hello2',
+            a: { b: 20 },
+            list: [1, 2, 3],
+            arr: [
+              {
+                a: 1
+              }
+            ],
+            b: 200
+          }
+        },
+        // data: {
+        //   msg: 'hello'
+        // },
+        props: {},
+        watch: {
+          // a(newVal, oldVal) {
+          //   console.log('watch')
+          // },
+          'a.b'(newVal, oldVal) {
+            console.log('watch a.b')
+          },
+          b: {
+            handler() {
+              console.log('handler')
+            },
+            immediate: true
+          }
+        },
 
-      //   // ...
-      //   created() {
-      //     console.log('created')
-      //   },
-      //   updated() {
-      //     console.log('updated')
-      //   }
-      // })
+        // ...
+        created() {
+          console.log('created')
+        },
+        updated() {
+          console.log('updated')
+        }
+      })
       // .$mount("#app") // 作用和 el 一样
 
       // console.log("vm: ", vm);
@@ -94,21 +94,21 @@
       // 1. 数据变化，自动更新视图 vm._update(vm._render())
       // 2. vue 的更新策略：以组件为单位，给每一个组件添加一个 watcher，当属性变化时，调用 watcher
       // console.log(vm)
-      // setTimeout(() => {
-      //   // 自动更新 - 将 vm._update(vm._render()) 封装成函数，在数据更新时调用
-      //   // 此时每一次更新都会调用 vm._update(vm._render()) - 性能开销大
-      //   // 解决：使用队列(nextTick) - 批量处理 - 多次数据更新，只调用一次 vm._update(vm._render())
-      //   //  异步处理 - 数据更新后，不会立即执行
-      //   //  - watcher.js 的 update()
-      //   vm.msg = 'world'
-      //   vm.arr.push({ a: 4, b: 5 })
-      //   // vm.$nextTick(() => {
-      //   //   // 数据更新后，获取到最新的 dom
-      //   //   console.log('🚀 ~ vm.$nextTick ~ vm.$el.innerHTML:', vm.$el.innerHTML)
-      //   // })
-      //   vm.b = 300
-      //   vm.a.b = 500
-      // }, 1000)
+      setTimeout(() => {
+        // 自动更新 - 将 vm._update(vm._render()) 封装成函数，在数据更新时调用
+        // 此时每一次更新都会调用 vm._update(vm._render()) - 性能开销大
+        // 解决：使用队列(nextTick) - 批量处理 - 多次数据更新，只调用一次 vm._update(vm._render())
+        //  异步处理 - 数据更新后，不会立即执行
+        //  - watcher.js 的 update()
+        vm.msg = 'world'
+        vm.arr.push({ a: 4, b: 5 })
+        // vm.$nextTick(() => {
+        //   // 数据更新后，获取到最新的 dom
+        //   console.log('🚀 ~ vm.$nextTick ~ vm.$el.innerHTML:', vm.$el.innerHTML)
+        // })
+        vm.b = 300
+        vm.a.b = 500
+      }, 1000)
 
       // * 二、实现对象收集依赖
       // dep 和 watcher 关系 - 多对多
