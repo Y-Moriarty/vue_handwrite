@@ -1,8 +1,10 @@
+import { compileToFunction } from './compile/index'
 import { initGlobApi } from './global-api/index'
 import { initMixin } from './init'
 import { stateMixin } from './initState'
 import { lifecycleMixin } from './lifecycle'
 import { renderMixin } from './vnode/index'
+import { createEL, patch } from './vnode/patch'
 
 function Vue(options) {
   // 拿到 new Vue 时传入的数据对象
@@ -29,4 +31,34 @@ stateMixin(Vue)
 
 // 使用一些全局方法(API) Vue.mixin Vue.Component Vue.extend等
 initGlobApi(Vue)
+
+// 创建 vNode
+let vm1 = new Vue({ data: { name: '张三' } })
+// let render1 = compileToFunction(`<div id="a" style="color: red"></div>`)
+let render1 = compileToFunction(`<ul>
+  <li id="a" style="color: red" key="a">a</li>
+  <li id="b" style="color: pink" key="b">b</li>
+  <li id="c" style="color: blue" key="c">c</li>
+  </ul>`)
+let vnode1 = render1.call(vm1)
+document.body.appendChild(createEL(vnode1))
+// 数据更新
+let vm2 = new Vue({ data: { name: '李四' } })
+// let render2 = compileToFunction('<div id="b">{{name}}</div>')
+// let render2 = compileToFunction(`<ul>
+//   <li id="a" style="color: red" key="a">a</li>
+//   <li id="b" style="color: pink" key="b">b</li>
+//   <li id="c" style="color: blue" key="c">c</li>
+//   <li id="d" style="color: yellow" key="d">d</li>
+//   </ul>`)
+let render2 = compileToFunction(`<ul>
+  <li id="d" style="color: yellow" key="d">d</li>
+  <li id="c" style="color: blue" key="c">c</li>
+  <li id="b" style="color: pink" key="b">b</li>
+    <li id="a" style="color: red" key="a">a</li>
+    </ul>`)
+let vnode2 = render2.call(vm2)
+// patch 对比
+patch(vnode1, vnode2)
+
 export default Vue

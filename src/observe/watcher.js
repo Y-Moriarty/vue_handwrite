@@ -94,7 +94,7 @@ function queueWatcher(watcher) {
   // console.log('🚀 ~ queueWatcher ~ id:', id)
   // 去重
   if (has[id] == null) {
-    console.log('🚀 ~ I only action one time')
+    // console.log('🚀 ~ I only action one time')
     queue.push(watcher)
     has[id] = true
     // 列队处理

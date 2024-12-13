@@ -100,8 +100,8 @@ export function stateMixin(vm) {
   //  - 定义 $watch 挂载到 Vue 上
   vm.prototype.$watch = function (expOrFn, handler, options = {}) {
     // console.log('🚀 ~ stateMixin ~ options:', options)
-    console.log('🚀 ~ stateMixin ~ handler:', handler)
-    console.log('🚀 ~ stateMixin ~ expOrFn:', expOrFn)
+    // console.log('🚀 ~ stateMixin ~ handler:', handler)
+    // console.log('🚀 ~ stateMixin ~ expOrFn:', expOrFn)
 
     let watch = new watcher(this, expOrFn, handler, { ...options, user: true })
     // 判断 options 是否传入

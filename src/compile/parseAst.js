@@ -27,56 +27,56 @@ const startTagClose = /^\s*(\/?)>/ // 匹配标签结束的 >
 // 转为 ast 语法树时使用到
 // const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g // 匹配 {{}}
 
-// 遍历 - 创建 ast 语法树 - 将文件顶部的 div 转为其下面格式的 ast
-function createASTElement(tag, attrs) {
-  return {
-    tag, // 元素
-    attrs, // 属性
-    children: [], // 子节点
-    type: 1,
-    parent: null
-  }
-}
-
-let root // 根元素
-let createParent // 当前元素的父亲
-// 数据结构 - 栈
-let stack = [] // * 当使用下方的 start、charts、end 方法遍历处理时，保存相应的元素的层级 - 明确当前元素的父亲
-// 开始标签
-function start(tag, attrs) {
-  let element = createASTElement(tag, attrs)
-  if (!root) {
-    root = element
-  }
-  createParent = element
-  stack.push(element) // 元素入栈
-}
-// 文本标签 - 获取文本
-function charts(text) {
-  // console.log('🚀 ~ text:', text)
-  // text = text.replace(/a/g, '') // /a 替换空格
-  // console.log('🚀 ~ charts ~ text:', text)
-  if (text) {
-    createParent.children.push({
-      type: 3,
-      text
-    })
-  }
-}
-// 结束标签
-function end(tag) {
-  // console.log('🚀 ~ end ~ tag:', tag)
-  let element = stack.pop() // 元素出栈
-  createParent = stack[stack.length - 1]
-  // 元素闭合
-  if (createParent) {
-    element.parent = createParent.tag
-    createParent.children.push(element)
-  }
-}
-
 // * 解析 HTML - 将 HTML 转为 AST - 遍历
 export function parseHTML(html) {
+  // 遍历 - 创建 ast 语法树 - 将文件顶部的 div 转为其下面格式的 ast
+  function createASTElement(tag, attrs) {
+    return {
+      tag, // 元素
+      attrs, // 属性
+      children: [], // 子节点
+      type: 1,
+      parent: null
+    }
+  }
+
+  let root // 根元素
+  let createParent // 当前元素的父亲
+  // 数据结构 - 栈
+  let stack = [] // * 当使用下方的 start、charts、end 方法遍历处理时，保存相应的元素的层级 - 明确当前元素的父亲
+  // 开始标签
+  function start(tag, attrs) {
+    let element = createASTElement(tag, attrs)
+    if (!root) {
+      root = element
+    }
+    createParent = element
+    stack.push(element) // 元素入栈
+  }
+  // 文本标签 - 获取文本
+  function charts(text) {
+    // console.log('🚀 ~ text:', text)
+    text = text.replace(/\s/g, '') // /a 替换空格
+    // console.log('🚀 ~ charts ~ text:', text)
+    if (text) {
+      createParent.children.push({
+        type: 3,
+        text
+      })
+    }
+  }
+  // 结束标签
+  function end(tag) {
+    // console.log('🚀 ~ end ~ tag:', tag)
+    let element = stack.pop() // 元素出栈
+    createParent = stack[stack.length - 1]
+    // 元素闭合
+    if (createParent) {
+      element.parent = createParent.tag
+      createParent.children.push(element)
+    }
+  }
+
   // <div id="app">hello</div> - 开始标签 文本 结束标签
   // 一边遍历一边匹配一边删除，当 html 为空则结束
   while (html) {
