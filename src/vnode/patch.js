@@ -98,14 +98,14 @@ function updateChild(parent, oldChildren, newChildren) {
     // 对比子元素
     // 判断头部元素是否是同一个元素，是则进行对比
     if (isSameVnode(oldStartVnode, newStartVnode)) {
-      console.log('🚀 ~ isSameVnode ~ oldStartVnode, newStartVnode:', oldStartVnode, newStartVnode)
+      // console.log('🚀 ~ isSameVnode ~ oldStartVnode, newStartVnode:', oldStartVnode, newStartVnode)
       // 递归
       patch(oldStartVnode, newStartVnode)
       // 移动指针
       oldStartVnode = oldChildren[++oldStartIndex]
       newStartVnode = newChildren[++newStartIndex]
     } else if (isSameVnode(oldEndVnode, newEndVnode)) {
-      console.log('🚀 ~ isSameVnode ~ oldEndVnode, newEndVnode:', oldEndVnode, newEndVnode)
+      // console.log('🚀 ~ isSameVnode ~ oldEndVnode, newEndVnode:', oldEndVnode, newEndVnode)
       // } else if ((oldEndVnode, newEndVnode)) {
       // 头部不是同一个元素，从尾部开始对比
       // 递归
@@ -113,13 +113,13 @@ function updateChild(parent, oldChildren, newChildren) {
       oldEndVnode = oldChildren[--oldEndIndex]
       newEndVnode = newChildren[--newEndIndex]
     } else if (isSameVnode(oldStartVnode, newEndVnode)) {
-      console.log('🚀 ~ isSameVnode ~ oldStartVnode, newEndVnode:', oldStartVnode, newEndVnode)
+      // console.log('🚀 ~ isSameVnode ~ oldStartVnode, newEndVnode:', oldStartVnode, newEndVnode)
       // 新旧的头部和尾部对应的不一样，开始交叉对比（头对尾，尾对头）
       patch(oldStartVnode, newEndVnode)
       oldStartVnode = oldChildren[++oldStartIndex]
       newEndVnode = newChildren[--newEndIndex]
     } else if (isSameVnode(oldEndVnode, newStartVnode)) {
-      console.log('🚀 ~ isSameVnode ~ oldEndVnode, newStartVnode:', oldEndVnode, newStartVnode)
+      // console.log('🚀 ~ isSameVnode ~ oldEndVnode, newStartVnode:', oldEndVnode, newStartVnode)
       patch(oldEndVnode, newStartVnode) // 此元素中有子节点
       oldEndVnode = oldChildren[--oldEndIndex]
       newStartVnode = newChildren[++newStartIndex]

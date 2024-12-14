@@ -24,13 +24,20 @@ class Dep {
 
 // 添加 watcher
 Dep.target = null
+// * 处理多个 wathcer - computed 面试题
+let stack = [] // 使用栈
 export function pushTarget(watcher) {
-  Dep.target = watcher
+  Dep.target = watcher // 保留 watcher
+  // 入栈
+  stack.push(watcher) // 渲染 watcher、其他 watcher
 }
 
 // 移除 watcher - 当组件 watcher 中渲染完成后移除
 export function popTarget() {
-  Dep.target = null
+  // Dep.target = null // 清空 watcher
+  // 解析完成一个 watcher 就删除一个 watcher
+  stack.pop()
+  Dep.target = stack[stack.length - 1] // 获取到前一个 watcher
 }
 
 export default Dep

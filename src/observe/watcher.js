@@ -10,10 +10,15 @@ class watcher {
     this.exprOrfn = exprOrfn
     this.cb = cb
     this.options = options // 标识位，是否渲染
+
+    // computed 相关
+    this.lazy = options.lazy // 如果这个 watcher 上有 lazy，说明他是计算属性
+    this.dirty = this.lazy // 取值的时候表示用户是否执行
+
     // 每个 watcher 都有一个唯一的 id
     this.id = id++
     this.user = !!options.user
-    console.log('🚀 ~ watcher ~ constructor ~ user:', this.user)
+    // console.log('🚀 ~ watcher ~ constructor ~ user:', this.user)
     this.deps = [] // watcher deposit deps
     this.depsId = new Set()
     // 判断 exprOrfn 的类型，是否是函数
@@ -32,8 +37,10 @@ class watcher {
         return obj // * 此时返回的值是初始值
       }
     }
-    // 初次渲染时更新视图
-    this.value = this.get() // 保存 watch 初始值
+    // 初次渲染时更新视图，默认执行
+    // this.value = this.get() // 保存 watch 初始值
+    // computed 属性不一定需要默认执行
+    this.value = this.lazy ? void 0 : this.get() // 保存 watch 初始值
   }
 
   addDep(dep) {
@@ -49,7 +56,7 @@ class watcher {
   // 初次渲染
   get() {
     pushTarget(this) // 将当前 wathcer 添加到 dep 中
-    const value = this.getter() // 渲染页面 vm._update(vm._render())
+    const value = this.getter.call(this.vm) // 渲染页面 vm._update(vm._render())
     popTarget() // 渲染完成后从 dep 中移除
     return value
   }
@@ -71,7 +78,30 @@ class watcher {
     // ! 注意：此时每次数据的更新都会调用 get - 性能开销大
     // this.get() // 重新渲染
     // * 解决：使用缓存
-    queueWatcher(this)
+    // queueWatcher(this)
+    // * 解决：计算属性不重新渲染的问题
+    if (this.lazy) {
+      // 判断当前是计算属性的 watcher
+      this.dirty = true
+    } else {
+      queueWatcher(this)
+    }
+  }
+
+  // computed - 执行用户传入的方法
+  evaluate() {
+    this.value = this.get()
+    this.dirty = false
+  }
+
+  // 双向记忆
+  depend() {
+    // 收集 watcher，存放到 dep 中，dep 中会存放我的 watcher
+    // 通过这个 watcher 找到对应的所有 dep，再让所有的 dep 都记住这个渲染 wathcer
+    let i = this.deps.length
+    while (i--) {
+      this.deps[i].depend()
+    }
   }
 }
 
